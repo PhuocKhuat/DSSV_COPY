@@ -10,6 +10,7 @@ if(dataJson != null){
   let result = JSON.parse(dataJson);
   //LẤY ARRAY Ở DÒNG 9 ĐI XỬ LÝ TIẾP, PHẢI TRUYỀN VÀO THAM SỐ dSSV NẾU KHÔNG renderDSSV() SẼ HIỂU TỪ BÊN NGOÀI, THÊM Ở FUNCTION CONTRO, NÚT THÊM VÀ XOÁ.
   //FUNCTION ĐI KÈM RETURN
+  //BIẾN 1 ARRAY CHỨA OBJECT KHÔNG CÓ METHOD THÀNH ARRAY CHỨA OBJECT CÓ METHOD.
   dSSV = result.map(function(item){
     return new SinhVien(
     item.ma,
@@ -20,10 +21,9 @@ if(dataJson != null){
     item.van,);
   });
   renderDSSV(dSSV);
-  //BIẾN 1 ARRAY CHỨA OBJECT KHÔNG CÓ METHOD THÀNH ARRAY CHỨA OBJECT CÓ METHOD.
 }
 
-function themSV(){
+function themSV(){ //7 BƯỚC
   /**
    * 1. Tạo 1 array rỗng
    * 2. Lấy thông tin từ form => tạo object => push object vào array
@@ -111,27 +111,30 @@ function suaSV(id){ //3 BƯỚC
   document.getElementById('txtDiemVan').value = sVi.van;
   
 }
-function capNhatSV(id){ //6 BƯỚC
-  //1. TÌM VỊ TRÍ XOÁ SẼ DỰA THEO ID, DÙNG FINDINDEX
-  var viTri = dSSV.findIndex(function(item){
-    return item.ma == id;
-  });
-  //2. LẤY THÔNG TIN TỪ FORM - DOM TỚI GIAO DIỆN
+// NẾU ĐÃ DOM TỚI GIAO DIỆN THÌ KHÔNG NHẬN THAM SỐ ID, BÀI NÀY CẬP NHẬT THEO MÃ, DOM Ở DÒNG _ma 
+function capNhatSV(){ //6 BƯỚC
+  //1. LẤY THÔNG TIN TỪ FORM - DOM TỚI GIAO DIỆN
   var _ma = document.getElementById('txtMaSV').value;
   var _ten = document.getElementById('txtTenSV').value;
   var _email = document.getElementById('txtEmail').value;
   var _pass = document.getElementById('txtPass').value;
   var _toan = document.getElementById('txtDiemToan').value*1;
   var _van = document.getElementById('txtDiemVan').value*1;
+  //2. TÌM VỊ TRÍ XOÁ SẼ DỰA THEO _ma, DÙNG FINDINDEX
+  var viTri = dSSV.findIndex(function(item){
+    return item.ma == _ma;
+  });
   //3. TẠO OBJECT
   var sinhVien = new SinhVien(_ma, _ten, _email, _pass, _toan,_van);
-  //4. LẤY VỊ TRÍ TRONG dSSV VÀ ĐƯỢC GÁN BẰNG sVi
+  //4. LẤY VỊ TRÍ TRONG dSSV.
   dSSV[viTri] = sinhVien;
   //5. DÙNG SPLICE ĐỂ CẬP NHẬT TỪ VỊ TRÍ sinhVien, XOÁ ĐI CHÍNH NÓ, THÊM sinhVien VÀO
-  dSSV.splice(sinhVien && viTri, 1, sinhVien);
+  dSSV.splice(viTri, 1, sinhVien);
   // dSSV.splice(viTri, 1, sinhVien);
+  //6.
   var dataJson = JSON.stringify(dSSV);
-  localStorage.setItem('DSSV_LOCALL', dataJson);
-  //6. LẤY ARRAY ĐI XỬ LÝ TIẾP
+  //7.
+  localStorage.setItem('DSSV_LOCAL', dataJson);
+  //8. LẤY ARRAY ĐI XỬ LÝ TIẾP
   renderDSSV(dSSV);
 }
